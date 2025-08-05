@@ -1,0 +1,45 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { TextAnalysis, AnalysisType } from '../models/text-analysis.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+  private baseUrl = 'http://localhost:8080/api/analyze';
+
+  constructor(private http: HttpClient) {}
+
+  analyzeText(text: string, type: AnalysisType): Observable<TextAnalysis> {
+    const body = { text, type };
+
+    return this.http.post<any>(this.baseUrl, body).pipe(
+      map(response => this.mapBackendResponse(response)),
+      catchError(this.handleError)
+    );
+  }
+
+  private mapBackendResponse(response: any): TextAnalysis {
+    return {
+      text: response.text,
+      vowels: new Map(Object.entries(response.vowels || {})),
+      consonants: new Map(Object.entries(response.consonants || {}))
+      //If response.vowels/consonants is null, undefined, or falsy, it defaults to an empty object {}
+    };
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An error occurred';
+
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Client error: ${error.error.message}`;
+    } else {
+      errorMessage = `Server error: ${error.status} - ${error.message}`;
+    }
+
+    console.error('API Service Error:', errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
+}
