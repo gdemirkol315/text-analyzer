@@ -49,9 +49,14 @@
             mat-raised-button 
             color="primary" 
             (click)="executeAnalysis()"
-            [disabled]="!textInput || !selectedAnalysis"
+            [disabled]="!textInput || !selectedAnalysis || isLoading"
             class="analyze-button">
-            Analyze Text
+            @if (isLoading) {
+              <mat-spinner diameter="20"></mat-spinner>
+              Analyzing...
+            } @else {
+              Analyze Text
+            }
           </button>
         </div>
       </div>
