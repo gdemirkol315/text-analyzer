@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-class TextAnalysisControllerTest {
+class TextAnalyzerControllerTest {
 
     private MockMvc mockMvc;
 
@@ -29,7 +29,7 @@ class TextAnalysisControllerTest {
 
     @BeforeEach
     void setUp() {
-        TextAnalysisController controller = new TextAnalysisController(textAnalyzerService);
+        TextAnalyzerController controller = new TextAnalyzerController(textAnalyzerService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();

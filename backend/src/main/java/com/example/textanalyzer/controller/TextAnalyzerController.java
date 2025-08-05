@@ -12,11 +12,11 @@ import jakarta.validation.constraints.NotBlank;
 @RequestMapping("/api/text-analysis")
 @CrossOrigin(origins = "*")
 @Validated
-public class TextAnalysisController {
+public class TextAnalyzerController {
     
     private final TextAnalyzerService textAnalyzerService;
     
-    public TextAnalysisController(TextAnalyzerService textAnalyzerService) {
+    public TextAnalyzerController(TextAnalyzerService textAnalyzerService) {
         this.textAnalyzerService = textAnalyzerService;
     }
 
