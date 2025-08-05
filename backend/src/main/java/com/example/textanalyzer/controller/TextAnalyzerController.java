@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
 @Validated
 public class TextAnalyzerController {
     
