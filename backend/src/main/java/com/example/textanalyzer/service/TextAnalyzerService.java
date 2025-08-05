@@ -1,6 +1,7 @@
 package com.example.textanalyzer.service;
 
 import com.example.textanalyzer.model.TextAnalysis;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,8 +9,9 @@ import java.util.Map;
 /**
  * This class counts number of vowels and consonants in a Text and saving this values in a TextAnalysis instance
  */
+@Service
 public class TextAnalyzerService {
-    private final String vowels = "aeiou";
+    private static final String VOWELS = "aeiou";
 
     public TextAnalysis analyzeAll(String textToAnalyze) {
         TextAnalysis textAnalysis = new TextAnalysis();
@@ -39,7 +41,8 @@ public class TextAnalyzerService {
     private void getVowels(TextAnalysis textAnalysis) {
         Map<Character, Integer> vowelsGathered = new HashMap<>();
         for (char c : textAnalysis.getText().toLowerCase().toCharArray()) {
-            if (vowels.indexOf(c) != -1) {
+            boolean isVowel = VOWELS.indexOf(c) != -1 && Character.isLetter(c);
+            if (isVowel) {
                 vowelsGathered.merge(c, 1, Integer::sum);
             }
         }
@@ -49,7 +52,8 @@ public class TextAnalyzerService {
     private void getConsonants(TextAnalysis textAnalysis) {
         Map<Character, Integer> consonantsGathered = new HashMap<>();
         for (char c : textAnalysis.getText().toLowerCase().toCharArray()) {
-            if (vowels.indexOf(c) == -1 && Character.isLetter(c)) {
+            boolean isConsonant = VOWELS.indexOf(c) == -1 && Character.isLetter(c);
+            if (isConsonant) {
                 consonantsGathered.merge(c, 1, Integer::sum);
             }
         }
