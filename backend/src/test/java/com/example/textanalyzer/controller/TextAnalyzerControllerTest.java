@@ -1,15 +1,13 @@
 package com.example.textanalyzer.controller;
 
-import com.example.textanalyzer.exception.GlobalExceptionHandler;
 import com.example.textanalyzer.model.TextAnalysis;
 import com.example.textanalyzer.service.TextAnalyzerService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,21 +17,17 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(TextAnalyzerController.class)
 class TextAnalyzerControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockitoBean
     private TextAnalyzerService textAnalyzerService;
 
-    @BeforeEach
-    void setUp() {
-        TextAnalyzerController controller = new TextAnalyzerController(textAnalyzerService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
-    }
+    @Value("${api.base-path}/${api.version}")
+    private String apiBasePath;
 
     @Test
     void analyzeText_VowelType_ReturnsCorrectAnalysis() throws Exception {
@@ -46,7 +40,7 @@ class TextAnalyzerControllerTest {
         
         when(textAnalyzerService.analyzeVowels("hello")).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/analyze")
+        mockMvc.perform(post(apiBasePath + "/analyze")
                 .param("text", "hello")
                 .param("type", "vowel"))
                 .andExpect(status().isOk())
@@ -66,7 +60,7 @@ class TextAnalyzerControllerTest {
         
         when(textAnalyzerService.analyzeConsonants("hello")).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/analyze")
+        mockMvc.perform(post(apiBasePath + "/analyze")
                 .param("text", "hello")
                 .param("type", "consonant"))
                 .andExpect(status().isOk())
@@ -90,7 +84,7 @@ class TextAnalyzerControllerTest {
         
         when(textAnalyzerService.analyzeAll("hello")).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/analyze")
+        mockMvc.perform(post(apiBasePath + "/analyze")
                 .param("text", "hello")
                 .param("type", "both"))
                 .andExpect(status().isOk())
@@ -101,7 +95,7 @@ class TextAnalyzerControllerTest {
 
     @Test
     void analyzeText_InvalidType_ReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/analyze")
+        mockMvc.perform(post(apiBasePath + "/analyze")
                 .param("text", "hello")
                 .param("type", "invalid"))
                 .andExpect(status().isBadRequest())
@@ -111,7 +105,7 @@ class TextAnalyzerControllerTest {
 
     @Test
     void analyzeText_MissingTextParameter_ReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/analyze")
+        mockMvc.perform(post(apiBasePath + "/analyze")
                 .param("type", "vowel"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").exists());
@@ -119,7 +113,7 @@ class TextAnalyzerControllerTest {
 
     @Test
     void analyzeText_MissingTypeParameter_ReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/analyze")
+        mockMvc.perform(post(apiBasePath + "/analyze")
                 .param("text", "hello"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").exists());
@@ -130,7 +124,7 @@ class TextAnalyzerControllerTest {
         TextAnalysis mockAnalysis = new TextAnalysis();
         when(textAnalyzerService.analyzeVowels(anyString())).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/analyze")
+        mockMvc.perform(post(apiBasePath + "/analyze")
                 .param("text", "hello")
                 .param("type", "VOWEL"))
                 .andExpect(status().isOk());
