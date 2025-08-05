@@ -17,8 +17,8 @@ public class TextAnalyzerService {
         TextAnalysis textAnalysis = new TextAnalysis();
         textAnalysis.setText(textToAnalyze);
 
-        getVowels(textAnalysis);
-        getConsonants(textAnalysis);
+        textAnalysis.setVowels(getVowels(textAnalysis));
+        textAnalysis.setConsonants(getConsonants(textAnalysis));
         return textAnalysis;
     }
 
@@ -26,7 +26,7 @@ public class TextAnalyzerService {
         TextAnalysis textAnalysis = new TextAnalysis();
         textAnalysis.setText(textToAnalyze);
 
-        getVowels(textAnalysis);
+        textAnalysis.setVowels(getVowels(textAnalysis));
         return textAnalysis;
     }
 
@@ -34,11 +34,11 @@ public class TextAnalyzerService {
         TextAnalysis textAnalysis = new TextAnalysis();
         textAnalysis.setText(textToAnalyze);
 
-        getConsonants(textAnalysis);
+        textAnalysis.setConsonants(getConsonants(textAnalysis));
         return textAnalysis;
     }
 
-    private void getVowels(TextAnalysis textAnalysis) {
+    private Map<Character, Integer> getVowels(TextAnalysis textAnalysis) {
         Map<Character, Integer> vowelsGathered = new HashMap<>();
         for (char c : textAnalysis.getText().toLowerCase().toCharArray()) {
             boolean isVowel = VOWELS.indexOf(c) != -1 && Character.isLetter(c);
@@ -46,10 +46,10 @@ public class TextAnalyzerService {
                 vowelsGathered.merge(c, 1, Integer::sum);
             }
         }
-        textAnalysis.setVowels(vowelsGathered);
+        return vowelsGathered;
     }
 
-    private void getConsonants(TextAnalysis textAnalysis) {
+    private Map<Character, Integer> getConsonants(TextAnalysis textAnalysis) {
         Map<Character, Integer> consonantsGathered = new HashMap<>();
         for (char c : textAnalysis.getText().toLowerCase().toCharArray()) {
             boolean isConsonant = VOWELS.indexOf(c) == -1 && Character.isLetter(c);
@@ -57,6 +57,6 @@ public class TextAnalyzerService {
                 consonantsGathered.merge(c, 1, Integer::sum);
             }
         }
-        textAnalysis.setConsonants(consonantsGathered);
+        return consonantsGathered;
     }
 }
