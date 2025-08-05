@@ -1,0 +1,71 @@
+<div class="results-container" *ngIf="results.length > 0">
+  <mat-accordion multi="true">
+    @for (result of results; track result.id) {
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ result.analysisType | titlecase }} Analysis
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ result.timestamp | date:'short' }} - "{{ result.analysis.text | slice:0:30 }}{{ result.analysis.text.length > 30 ? '...' : '' }}"
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="analysis-content">
+          <div class="text-sample">
+            <strong>Analyzed Text:</strong> "{{ result.analysis.text }}"
+          </div>
+
+          <div class="results-grid">
+            <!-- Vowels Section -->
+            <div class="vowels-section" *ngIf="hasVowels(result.analysis)">
+              <h3>Vowels ({{ getTotalVowels(result.analysis) }} total)</h3>
+              <mat-table [dataSource]="getVowelData(result.analysis)" class="results-table">
+                <ng-container matColumnDef="character">
+                  <mat-header-cell *matHeaderCellDef>Character</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{ element.character }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="count">
+                  <mat-header-cell *matHeaderCellDef>Count</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{ element.count }}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+            </div>
+
+            <!-- Consonants Section -->
+            <div class="consonants-section" *ngIf="hasConsonants(result.analysis)">
+              <h3>Consonants ({{ getTotalConsonants(result.analysis) }} total)</h3>
+              <mat-table [dataSource]="getConsonantData(result.analysis)" class="results-table">
+                <ng-container matColumnDef="character">
+                  <mat-header-cell *matHeaderCellDef>Character</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{ element.character }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="count">
+                  <mat-header-cell *matHeaderCellDef>Count</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{ element.count }}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              </mat-table>
+            </div>
+          </div>
+
+          <!-- No Results Message -->
+          <div class="no-results" *ngIf="!hasVowels(result.analysis) && !hasConsonants(result.analysis)">
+            <p>No vowels or consonants found in the analyzed text.</p>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+</div>
+
+<div class="no-results-message" *ngIf="results.length === 0">
+  <p>No analysis results yet. Analyze some text to see results here!</p>
+</div>
