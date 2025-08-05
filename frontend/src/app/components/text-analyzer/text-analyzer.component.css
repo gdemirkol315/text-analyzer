@@ -8,6 +8,22 @@
   margin: 20px 0;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.title-section {
+  flex: 1;
+}
+
+.mode-toggle {
+  flex-shrink: 0;
+  margin-left: 20px;
+}
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -59,6 +75,17 @@
   }
   
   .clear-button {
+    align-self: flex-end;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .mode-toggle {
+    margin-left: 0;
     align-self: flex-end;
   }
 }

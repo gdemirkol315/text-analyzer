@@ -4,6 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 
 import { AnalysisResult, AnalysisType } from '../../models/text-analysis.model';
@@ -19,6 +20,7 @@ import { StorageService } from '../../services/storage.service';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatSlideToggleModule,
     FormsModule,
     AnalysisResults
   ],
@@ -29,6 +31,7 @@ export class TextAnalyzer implements OnInit {
   textInput = '';
   selectedAnalysis = '';
   results: AnalysisResult[] = [];
+  isOnlineMode = false;
 
   analysisTypes = [
     { value: 'vowel', label: 'Vowel Analysis' },
@@ -44,6 +47,11 @@ export class TextAnalyzer implements OnInit {
   ngOnInit(): void {
     // Load previously saved results from sessionStorage
     this.results = this.storageService.loadResults();
+
+    // Load mode preference from sessionStorage (default to offline mode)
+    const savedMode = sessionStorage.getItem('isOnlineMode');
+    // implemented as below because sessionStorage strores everything as string
+    this.isOnlineMode = savedMode === 'true';
   }
 
   executeAnalysis() {
@@ -79,6 +87,11 @@ export class TextAnalyzer implements OnInit {
   clearAllResults(): void {
     this.results = [];
     this.storageService.clearResults();
+  }
+
+  onModeToggle(): void {
+    // Save mode preference to sessionStorage
+    sessionStorage.setItem('isOnlineMode', this.isOnlineMode.toString());
   }
 
   private getAnalysisTypeLabel(type: string): string {
