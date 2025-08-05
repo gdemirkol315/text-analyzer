@@ -1,0 +1,48 @@
+<div class="container">
+  <mat-card class="analysis-card">
+    <mat-card-header>
+      <mat-card-title>Text Analysis Tool</mat-card-title>
+      <mat-card-subtitle>Enter your text and select an analysis type</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="form-container">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Enter text to analyze</mat-label>
+          <textarea 
+            matInput 
+            [(ngModel)]="textInput"
+            placeholder="Type or paste your text here..."
+            rows="6"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="6"
+            cdkAutosizeMaxRows="10">
+          </textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Analysis Type</mat-label>
+          <mat-select [(ngModel)]="selectedAnalysis">
+            <mat-option value="">Select analysis type</mat-option>
+            @for (analysis of analysisTypes; track analysis.value) {
+              <mat-option [value]="analysis.value">
+                {{ analysis.label }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="button-container">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="executeAnalysis()"
+            [disabled]="!textInput || !selectedAnalysis"
+            class="analyze-button">
+            Analyze Text
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
