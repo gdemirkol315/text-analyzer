@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.constraints.NotBlank;
 
 @RestController
-@RequestMapping("/api/text-analysis")
+@RequestMapping("/api")
 @CrossOrigin(origins = "*")
 @Validated
 public class TextAnalyzerController {
