@@ -1,5 +1,8 @@
 package com.example.textanalyzer.model;
 
+import lombok.Getter;
+
+@Getter
 public enum AnalysisType {
     VOWEL("vowel"),
     CONSONANT("consonant"),
@@ -9,10 +12,6 @@ public enum AnalysisType {
 
     AnalysisType(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 
     public static AnalysisType fromString(String value) {
