@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.constraints.NotBlank;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("${api.base-path}/${api.version}")
 @Validated
 public class TextAnalyzerController {
     

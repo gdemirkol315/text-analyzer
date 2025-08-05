@@ -8,7 +8,8 @@ import { TextAnalysis, AnalysisType } from '../models/text-analysis.model';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080/api/analyze';
+  private readonly API_VERSION = 'v1';
+  private baseUrl = `http://localhost:8080/api/${this.API_VERSION}/analyze`;
 
   constructor(private http: HttpClient) {}
 
