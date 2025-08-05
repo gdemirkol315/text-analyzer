@@ -1,1 +1,20 @@
 /* App-level styles */
+
+mat-toolbar {
+  height: auto !important;
+  min-height: 180px !important;
+  padding: 10px 0 !important;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.logo {
+  height: 160px;
+  width: auto;
+  max-width: 600px;
+}
