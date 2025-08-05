@@ -2,7 +2,7 @@
   <div class="results-container">
     <mat-accordion multi="true">
       @for (result of results; track result.id) {
-        <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel [expanded]="false">
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ result.analysisType | titlecase }} Analysis
