@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 import { AnalysisResult, AnalysisType } from '../../models/text-analysis.model';
 import { AnalysisResults } from '../analysis-results/analysis-results.component';
@@ -46,7 +47,8 @@ export class TextAnalyzer implements OnInit {
   constructor(
     private textAnalyzerService: TextAnalyzerService,
     private storageService: StorageService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -69,10 +71,12 @@ export class TextAnalyzer implements OnInit {
           .subscribe({
             next: (analysis) => {
               this.handleAnalysisResult(analysis);
+              this.toastr.success('Text analysis completed successfully!', 'Success');
               this.isLoading = false;
             },
             error: (error) => {
               console.error('API call failed, falling back to offline mode:', error);
+              this.toastr.error('API call failed, using offline mode instead', 'Error');
               // Fallback to offline mode
               this.performOfflineAnalysis();
               this.isLoading = false;
@@ -92,6 +96,7 @@ export class TextAnalyzer implements OnInit {
       this.selectedAnalysis as AnalysisType
     );
     this.handleAnalysisResult(analysis);
+    this.toastr.success('Text analysis completed successfully!', 'Success');
   }
 
   private handleAnalysisResult(analysis: any) {
