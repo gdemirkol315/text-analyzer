@@ -5,3 +5,10 @@ export interface TextAnalysis {
 }
 
 export type AnalysisType = 'vowel' | 'consonant' | 'both';
+
+export interface AnalysisResult {
+  id: string;
+  timestamp: Date;
+  analysis: TextAnalysis;
+  analysisType: string;
+}

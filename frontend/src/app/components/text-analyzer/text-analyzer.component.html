@@ -45,4 +45,21 @@
       </div>
     </mat-card-content>
   </mat-card>
+
+  <!-- Results Display -->
+  @if (results.length > 0) {
+    <div class="results-section">
+      <div class="results-header">
+        <h2>Analysis Results ({{ results.length }})</h2>
+        <button 
+          mat-stroked-button 
+          color="warn" 
+          (click)="clearAllResults()"
+          class="clear-button">
+          Clear All Results
+        </button>
+      </div>
+      <app-analysis-results [results]="results"></app-analysis-results>
+    </div>
+  }
 </div>
