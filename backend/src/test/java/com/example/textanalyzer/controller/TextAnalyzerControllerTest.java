@@ -46,7 +46,7 @@ class TextAnalyzerControllerTest {
         
         when(textAnalyzerService.analyzeVowels("hello")).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/text-analysis/analyze")
+        mockMvc.perform(post("/api/analyze")
                 .param("text", "hello")
                 .param("type", "vowel"))
                 .andExpect(status().isOk())
@@ -66,7 +66,7 @@ class TextAnalyzerControllerTest {
         
         when(textAnalyzerService.analyzeConsonants("hello")).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/text-analysis/analyze")
+        mockMvc.perform(post("/api/analyze")
                 .param("text", "hello")
                 .param("type", "consonant"))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class TextAnalyzerControllerTest {
         
         when(textAnalyzerService.analyzeAll("hello")).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/text-analysis/analyze")
+        mockMvc.perform(post("/api/analyze")
                 .param("text", "hello")
                 .param("type", "both"))
                 .andExpect(status().isOk())
@@ -101,7 +101,7 @@ class TextAnalyzerControllerTest {
 
     @Test
     void analyzeText_InvalidType_ReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/text-analysis/analyze")
+        mockMvc.perform(post("/api/analyze")
                 .param("text", "hello")
                 .param("type", "invalid"))
                 .andExpect(status().isBadRequest())
@@ -111,7 +111,7 @@ class TextAnalyzerControllerTest {
 
     @Test
     void analyzeText_MissingTextParameter_ReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/text-analysis/analyze")
+        mockMvc.perform(post("/api/analyze")
                 .param("type", "vowel"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").exists());
@@ -119,7 +119,7 @@ class TextAnalyzerControllerTest {
 
     @Test
     void analyzeText_MissingTypeParameter_ReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/api/text-analysis/analyze")
+        mockMvc.perform(post("/api/analyze")
                 .param("text", "hello"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").exists());
@@ -130,7 +130,7 @@ class TextAnalyzerControllerTest {
         TextAnalysis mockAnalysis = new TextAnalysis();
         when(textAnalyzerService.analyzeVowels(anyString())).thenReturn(mockAnalysis);
         
-        mockMvc.perform(post("/api/text-analysis/analyze")
+        mockMvc.perform(post("/api/analyze")
                 .param("text", "hello")
                 .param("type", "VOWEL"))
                 .andExpect(status().isOk());
