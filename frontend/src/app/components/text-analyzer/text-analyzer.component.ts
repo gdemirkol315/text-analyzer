@@ -5,12 +5,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 
 import { AnalysisResult, AnalysisType } from '../../models/text-analysis.model';
 import { AnalysisResults } from '../analysis-results/analysis-results.component';
 import { TextAnalyzerService } from '../../services/text-analyzer.service';
 import { StorageService } from '../../services/storage.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-text-analyzer',
@@ -21,6 +23,7 @@ import { StorageService } from '../../services/storage.service';
     MatSelectModule,
     MatButtonModule,
     MatSlideToggleModule,
+    MatProgressSpinnerModule,
     FormsModule,
     AnalysisResults
   ],
@@ -32,6 +35,7 @@ export class TextAnalyzer implements OnInit {
   selectedAnalysis = '';
   results: AnalysisResult[] = [];
   isOnlineMode = false;
+  isLoading = false;
 
   analysisTypes = [
     { value: 'vowel', label: 'Vowel Analysis' },
@@ -41,7 +45,8 @@ export class TextAnalyzer implements OnInit {
 
   constructor(
     private textAnalyzerService: TextAnalyzerService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private apiService: ApiService
   ) {}
 
   ngOnInit(): void {
@@ -56,28 +61,56 @@ export class TextAnalyzer implements OnInit {
 
   executeAnalysis() {
     if (this.textInput && this.selectedAnalysis) {
-      const analysis = this.textAnalyzerService.analyze(
-        this.textInput,
-        this.selectedAnalysis as AnalysisType
-      );
+      this.isLoading = true;
 
-      const result: AnalysisResult = {
-        id: this.generateId(),
-        timestamp: new Date(),
-        analysis,
-        analysisType: this.getAnalysisTypeLabel(this.selectedAnalysis)
-      };
-
-      // Add new result to the beginning of the array (newest first)
-      this.results.unshift(result);
-
-      // Save to sessionStorage
-      this.storageService.saveResults(this.results);
-
-      // Clear the input for next analysis
-      this.textInput = '';
-      this.selectedAnalysis = '';
+      if (this.isOnlineMode) {
+        // Online mode: use API service
+        this.apiService.analyzeText(this.textInput, this.selectedAnalysis as AnalysisType)
+          .subscribe({
+            next: (analysis) => {
+              this.handleAnalysisResult(analysis);
+              this.isLoading = false;
+            },
+            error: (error) => {
+              console.error('API call failed, falling back to offline mode:', error);
+              // Fallback to offline mode
+              this.performOfflineAnalysis();
+              this.isLoading = false;
+            }
+          });
+      } else {
+        // Offline mode: use local service
+        this.performOfflineAnalysis();
+        this.isLoading = false;
+      }
     }
+  }
+
+  private performOfflineAnalysis() {
+    const analysis = this.textAnalyzerService.analyze(
+      this.textInput,
+      this.selectedAnalysis as AnalysisType
+    );
+    this.handleAnalysisResult(analysis);
+  }
+
+  private handleAnalysisResult(analysis: any) {
+    const result: AnalysisResult = {
+      id: this.generateId(),
+      timestamp: new Date(),
+      analysis,
+      analysisType: this.getAnalysisTypeLabel(this.selectedAnalysis)
+    };
+
+    // Add new result to the beginning of the array (newest first)
+    this.results.unshift(result);
+
+    // Save to sessionStorage
+    this.storageService.saveResults(this.results);
+
+    // Clear the input for next analysis
+    this.textInput = '';
+    this.selectedAnalysis = '';
   }
 
   private generateId(): string {

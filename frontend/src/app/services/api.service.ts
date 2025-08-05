@@ -13,9 +13,13 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   analyzeText(text: string, type: AnalysisType): Observable<TextAnalysis> {
-    const body = { text, type };
+    const params = new URLSearchParams();
+    params.set('text', text);
+    params.set('type', type);
 
-    return this.http.post<any>(this.baseUrl, body).pipe(
+    return this.http.post<any>(this.baseUrl, params.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).pipe(
       map(response => this.mapBackendResponse(response)),
       catchError(this.handleError)
     );
